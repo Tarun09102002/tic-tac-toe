@@ -10,7 +10,7 @@ import {
 } from "./pages/index";
 import { createContext, useEffect } from "react";
 const io = require("socket.io-client");
-const socket = io("http://localhost:9090");
+const socket = io("http://localhost:8080");
 export const SocketContext = createContext();
 
 function App() {

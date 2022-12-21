@@ -10,6 +10,7 @@ const PORT = process.env.PORT || 3001;
 const jwt = require("jsonwebtoken");
 const { populate } = require("./models/game-model");
 const { Server } = require("socket.io");
+const http = require("http").createServer(app);
 
 mongoose
 	.connect(process.env.MONGO_URI, {
@@ -20,7 +21,14 @@ mongoose
 		console.log("Connected to MongoDB");
 	});
 
-const io = new Server(8008, {
+// const io = new Server(8008, {
+// 	cors: {
+// 		origin: "*",
+// 		credentials: true,
+// 	},
+// });
+
+const io = require("socket.io")(http, {
 	cors: {
 		origin: "*",
 		credentials: true,
@@ -269,6 +277,6 @@ app.get("/", (req, res) => {
 	res.send("Hello World!");
 });
 
-app.listen(PORT, () => {
+http.listen(PORT, () => {
 	console.log(`Server listening on port ${PORT}`);
 });
