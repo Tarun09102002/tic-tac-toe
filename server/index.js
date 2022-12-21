@@ -81,7 +81,7 @@ io.on("connection", (socket) => {
 
 	socket.on("button-action", async ({ roomid, token }) => {
 		const { id } = jwt.verify(token, process.env.JWT_SECRET);
-		const game = await Game.findById(roomid);
+		const game = await Game.findById(roomid).populate("player1");
 		if (game.completed) {
 			const defaultGame = [
 				[-1, -1, -1],
