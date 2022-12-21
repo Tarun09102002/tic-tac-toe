@@ -20,7 +20,7 @@ mongoose
 		console.log("Connected to MongoDB");
 	});
 
-const io = new Server(9090, {
+const io = new Server(8008, {
 	cors: {
 		origin: "*",
 		credentials: true,
