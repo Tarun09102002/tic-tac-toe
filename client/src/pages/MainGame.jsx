@@ -27,6 +27,15 @@ function MainGame() {
 		}
 	};
 
+	const handleButtonClick = () => {
+		if (gameDetails.completed || gameDetails.turn) {
+			socket.emit("button-action", {
+				roomid: roomid,
+				token: sessionStorage.getItem("token"),
+			});
+		}
+	};
+
 	useEffect(() => {
 		axios
 			.get(
@@ -95,64 +104,82 @@ function MainGame() {
 	}, [game, id]);
 
 	return (
-		<div>
+		<div className="h-full">
 			{!gameDetails ? (
 				<div>Loading...</div>
 			) : (
-				<div className="flex flex-col font-sans h-full p-4">
-					<div className="mb-10 cursor-pointer" onClick={() => navigate(-1)}>
-						<ChevronLeftIcon height={36} />
-					</div>
-					<div className="text-[28px] font-bold">
-						Game with {gameDetails.opponent.name}
-					</div>
-					<div className="text-[14px]">Your piece</div>
+				<div className="flex flex-col font-sans h-full p-4 justify-between">
 					<div>
-						{`${id}` === game.player1._id ? (
-							<img src="/X.png" alt="" className="h-[64px]" />
-						) : (
-							<img src="/0.png" alt="" className="h-[64px]" />
-						)}
-					</div>
-					<div className="flex flex-col w-[330px] bg-[#FFE79E] items-center self-center">
-						<div className="py-2">
-							{gameDetails.completed
-								? gameDetails.winner === 3
-									? "Its a Draw"
-									: gameDetails.winner === 1
-									? "You Won"
-									: "You Lost"
-								: gameDetails.turn
-								? "Your Move"
-								: "Their Move"}
+						<div className="mb-10 cursor-pointer" onClick={() => navigate(-1)}>
+							<ChevronLeftIcon height={36} />
 						</div>
-						<div className="flex flex-col w-full">
-							{gameState.map((row, i) => {
-								return (
-									<div
-										className="flex flex-row mt-2 justify-between w-full"
-										key={i}
-									>
-										{row.map((col, j) => {
-											return (
-												<div
-													className="w-[105px] h-[105px] bg-white flex justify-center items-center"
-													key={j}
-													onClick={() => handleClick(i, j)}
-												>
-													{col === -1 ? (
-														""
-													) : col === 1 ? (
-														<img src="/X.png" alt="" className="h-[105px]" />
-													) : (
-														<img src="/0.png" alt="" className="h-[105px]" />
-													)}
-												</div>
-											);
-										})}
-									</div>
-								);
-							})}
+						<div className="text-[28px] font-bold">
+							Game with {gameDetails.opponent.name}
+						</div>
+						<div className="text-[14px]">Your piece</div>
+						<div>
+							{`${id}` === game.player1._id ? (
+								<img src="/X.png" alt="" className="h-[64px]" />
+							) : (
+								<img src="/0.png" alt="" className="h-[64px]" />
+							)}
+						</div>
+						<div className="flex flex-col w-[330px] bg-[#FFE79E] items-center self-center">
+							<div className="py-2">
+								{gameDetails.completed
+									? gameDetails.winner === 3
+										? "Its a Draw"
+										: gameDetails.winner === 1
+										? "You Won"
+										: "You Lost"
+									: gameDetails.turn
+									? "Your Move"
+									: "Their Move"}
+							</div>
+							<div className="flex flex-col w-full">
+								{gameState.map((row, i) => {
+									return (
+										<div
+											className="flex flex-row mt-2 justify-between w-full"
+											key={i}
+										>
+											{row.map((col, j) => {
+												return (
+													<div
+														className="w-[105px] h-[105px] bg-white flex justify-center items-center"
+														key={j}
+														onClick={() => handleClick(i, j)}
+													>
+														{col === -1 ? (
+															""
+														) : col === 1 ? (
+															<img src="/X.png" alt="" className="h-[105px]" />
+														) : (
+															<img src="/0.png" alt="" className="h-[105px]" />
+														)}
+													</div>
+												);
+											})}
+										</div>
+									);
+								})}
+							</div>
+						</div>
+					</div>
+					<div>
+						<div
+							className={`w-[320px] text-white cursor-pointer rounded-md drop-shadow-lg ${
+								!gameDetails.turn && !gameDetails.completed
+									? "bg-[#f5f5f5] text-black"
+									: "bg-button"
+							}  h-[56px] flex justify-center items-center`}
+							onClick={() => handleButtonClick()}
+						>
+							{gameDetails.completed
+								? "Start Another!"
+								: gameDetails.turn
+								? "Submit!"
+								: "Wait for Opponent!"}
 						</div>
 					</div>
 				</div>

@@ -79,6 +79,34 @@ io.on("connection", (socket) => {
 		io.to(roomid).emit("game-details", game);
 	});
 
+	socket.on("button-action", async ({ roomid, token }) => {
+		const { id } = jwt.verify(token, process.env.JWT_SECRET);
+		const game = await Game.findById(roomid);
+		if (game.completed) {
+			const defaultGame = [
+				[-1, -1, -1],
+				[-1, -1, -1],
+				[-1, -1, -1],
+			];
+			await Game.findByIdAndUpdate(roomid, {
+				gameState: defaultGame,
+				turn: 0,
+				winner: 0,
+				completed: false,
+				started: false,
+			});
+		} else {
+			await Game.findByIdAndUpdate(roomid, {
+				winner: game.player1.id === id ? 2 : 1,
+				completed: true,
+			});
+		}
+		const gameFinal = await Game.findById(roomid)
+			.populate("player1")
+			.populate("player2");
+		io.to(roomid).emit("game-details", gameFinal);
+	});
+
 	socket.on("move", async ({ roomid, token, i, j }) => {
 		const { id } = jwt.verify(token, process.env.JWT_SECRET);
 		console.log(roomid + " " + id + " " + i + " " + j);

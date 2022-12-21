@@ -31,7 +31,7 @@ function Login() {
 	return (
 		<div className="font-sans font-bold flex flex-col justify-between h-full pt-4 pl-4">
 			<div>
-				<div className="mb-10">
+				<div className="mb-10" onClick={() => navigate(-1)}>
 					<ChevronLeftIcon height={36} />
 				</div>
 				<div>
